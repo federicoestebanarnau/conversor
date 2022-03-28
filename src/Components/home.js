@@ -4,17 +4,15 @@ import axios from "axios";
 function Home() {
   const [rate, setRates] = useState([]);
 
-  let objetoArray = Object.entries(rate);
-
   useEffect(() => {
     axios.get("https://api.exchangerate.host/latest").then((res) => {
-      setRates(res.data.rates);
+      setRates(Object.entries(res.data.rates));
     });
   }, []);
 
   return (
     <>
-      {objetoArray.map((r) => (
+      {rate.map((r) => (
         <ul key={r[1]}>
           <li>
             {r[0]}: {r[1]}
