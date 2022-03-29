@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import AcercaDe from "./Components/acercaDe";
 import Home from "./Components/home";
+import "./Components/contenedor.css";
 
 function App() {
   return (
