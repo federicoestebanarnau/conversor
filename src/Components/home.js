@@ -6,9 +6,8 @@ function Home() {
   const [rate, setRates] = useState([]);
 
   useEffect(() => {
-    axios.get("https://api.exchangerate.host/latest").then((res) => {
+    axios.get("https://api.exchangerate.host/symbols").then((res) => {
       setRates(Object.entries(res.data.rates));
-      console.log("https://api.exchangerate.host/symbols");
     });
   }, []);
 
