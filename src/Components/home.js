@@ -3,13 +3,31 @@ import axios from "axios";
 import "../Components/contenedor.css";
 
 function Home() {
-  const [rate, setRates] = useState([]);
+  const [symbol, setSymbol] = useState([]);
+  const [changeDe, setChangeDe] = useState("USD");
+  const [changeA, setChangeA] = useState("ARS");
+  const [precio, setPrecio] = useState("");
+  const [precioDe, setPrecioDe] = useState(1);
 
   useEffect(() => {
     axios.get("https://api.exchangerate.host/symbols").then((res) => {
-      setRates(Object.entries(res.data.rates));
+      setSymbol(Object.entries(res.data.symbols));
+      // console.log(res);
     });
   }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://api.exchangerate.host/convert?from=${changeDe}&to=${changeA}`
+      )
+      .then((res) => {
+        setPrecio(res.data.info.rate);
+      });
+  }, [changeDe, changeA]);
+
+  console.log("change de:", changeDe);
+  console.log("change a:", changeA);
 
   return (
     <>
@@ -20,15 +38,22 @@ function Home() {
             <label className="texto1" htmlFor="favoriteOnly">
               Convertir de:
             </label>
-            <select className="select1" name="favoriteOnly" id="favoriteOnly">
-              {rate.map((r) => (
-                <option key={r[1]}>{r[0]}</option>
+            <select
+              onChange={(props) => setChangeDe(props.target.value)}
+              value={changeDe}
+              className="select1"
+              name="favoriteOnly"
+              id="favoriteOnly"
+            >
+              {symbol.map((r) => (
+                <option key={r[0]}>{r[0]}</option>
               ))}
             </select>
             <input
               className="select2"
               type="number"
-              placeholder="Ingrese el monto"
+              onChange={(props) => setChangeDe(props.value)}
+              value={precioDe}
             ></input>
           </form>
 
@@ -36,12 +61,23 @@ function Home() {
             <label className="texto2" htmlFor="favoriteOnly">
               A:
             </label>
-            <select className="select1" name="favoriteOnly" id="favoriteOnly">
-              {rate.map((r) => (
-                <option key={r[1]}>{r[0]}</option>
+            <select
+              onChange={(props) => setChangeA(props.target.value)}
+              className="select1"
+              value={changeA}
+              name="favoriteOnly"
+              id="favoriteOnly"
+            >
+              {symbol.map((r) => (
+                <option key={r[0]}>{r[0]}</option>
               ))}
             </select>
-            <input className="select2" type="number"></input>
+            <input
+              className="select2"
+              type="number"
+              onChange={(props) => setPrecioDe(props.value)}
+              value={precio}
+            ></input>
           </form>
         </div>
       </div>
