@@ -7,12 +7,12 @@ function Home() {
   const [changeDe, setChangeDe] = useState("USD");
   const [changeA, setChangeA] = useState("ARS");
   const [precio, setPrecio] = useState("");
+  const [precioGuardado, setPrecioGuardado] = useState("");
   const [precioDe, setPrecioDe] = useState(1);
 
   useEffect(() => {
     axios.get("https://api.exchangerate.host/symbols").then((res) => {
       setSymbol(Object.entries(res.data.symbols));
-      // console.log(res);
     });
   }, []);
 
@@ -22,9 +22,14 @@ function Home() {
         `https://api.exchangerate.host/convert?from=${changeDe}&to=${changeA}`
       )
       .then((res) => {
-        setPrecio(res.data.info.rate);
+        setPrecioGuardado(res.data.info.rate);
       });
   }, [changeDe, changeA]);
+
+  useEffect(() => {
+    const resultado = precioGuardado * precioDe;
+    setPrecio(resultado.toFixed(2));
+  }, [precioDe]);
 
   console.log("change de:", changeDe);
   console.log("change a:", changeA);
@@ -52,7 +57,7 @@ function Home() {
             <input
               className="select2"
               type="number"
-              onChange={(props) => setChangeDe(props.value)}
+              onChange={(props) => setPrecioDe(props.target.value)}
               value={precioDe}
             ></input>
           </form>
@@ -74,8 +79,8 @@ function Home() {
             </select>
             <input
               className="select2"
-              type="number"
-              onChange={(props) => setPrecioDe(props.value)}
+              type="text"
+              onChange={(props) => setPrecioGuardado(props.target.value)}
               value={precio}
             ></input>
           </form>
